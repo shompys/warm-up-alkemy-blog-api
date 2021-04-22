@@ -10,7 +10,8 @@ const sequelize = new Sequelize(
     db_password, 
     {
         host: db_host,
-        dialect: "mysql"
+        dialect: "mysql",
+        logging: false
     }
 )
 
