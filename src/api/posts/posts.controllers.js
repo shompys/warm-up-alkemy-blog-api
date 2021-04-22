@@ -1,4 +1,5 @@
 import Posts from './posts.models';
+import Categories from '../categories/categories.models';
 
 export const createPosts = async (req, res, next) => {
 
@@ -7,10 +8,11 @@ export const createPosts = async (req, res, next) => {
     try{
 
         const postCreated = await Posts.create({
+            
             title: titulo,
             content: contenido,
             image: imagen,
-            category: categoria
+            CategoryId: categoria
         })
         
         res.status(200).json(postCreated)
@@ -27,8 +29,10 @@ export const getPosts = async (req, res, next) => {
     try{
 
         const postsSearchs = await Posts.findAll({
-            
-            attributes:['id', 'title', 'image', 'category', 'createdAt'],
+            include: {
+                model: Categories,
+            },
+            attributes:['id', 'title', 'image', 'createdAt'],
             order:[['createdAt', 'DESC']]
             
         })
@@ -49,7 +53,12 @@ export const getPostsById = async (req, res, next) => {
 
     try{
 
-        const postSearch = await Posts.findByPk(req.params.id)
+        const postSearch = await Posts.findByPk(req.params.id,{
+            attributes:['id', 'title', 'content', 'image', 'createdAt'],
+            include:{
+                model: Categories,
+            }
+        })
         //generamos error null cuando no existe id
         if (postSearch === null) throw new Error('The resource does not exist')
         res.status(200).json(postSearch)
@@ -69,10 +78,12 @@ export const updateUserById = async (req, res, next) => {
     try{
 
         const postUpdated = await Posts.update({
+            
             title: titulo,
             content: contenido,
             image: imagen,
-            category: categoria
+            CategoryId: categoria
+
         },{
             where:{
                 id: req.params.id
