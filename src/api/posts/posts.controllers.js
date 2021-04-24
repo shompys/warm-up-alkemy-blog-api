@@ -16,9 +16,10 @@ export const createPosts = async (req, res, next) => {
         })
         
         res.status(200).json(postCreated)
-
+        
     }catch(err){
-        if (error.fields[0] === 'CategoryId') return res.status(400).json({status: 400, msg: 'The category does not exist'})
+        console.log(err)
+        if (err.fields[0] === 'CategoryId') return res.status(400).json({status: 400, msg: 'The category does not exist'})
         res.status(400).json({status: 400, msg: 'Error'});
         
     }
